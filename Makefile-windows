@@ -1,0 +1,33 @@
+# output
+OUTPUT = AirISP
+
+# includes
+INC = \
+-I. \
+-I./platform \
+-I./isp \
+-I./3rd
+
+# sources
+SRC = $(wildcard *.c)
+SRC += $(wildcard ./isp/*.c)
+SRC += platform/windows.c
+
+OBJ = $(patsubst %.c, %.o, $(SRC))
+OBJ += ./3rd/PComm.dll
+
+# compiler
+CC = $(PREFIX)gcc
+CFLAGS = $(INC) $(OPT) -Wall -fdata-sections -ffunction-sections -m32 -fexec-charset=GB2312
+
+# rules
+$(OUTPUT): $(OBJ)
+	$(CC) $(CFLAGS) $^ -o $@
+
+%.o: %.c
+	$(CC) -c $(CFLAGS) $< -o $@
+
+all: $(OUTPUT)
+
+clean:
+	rm -rf $(OUTPUT) *.o platform/*.o isp/*.o

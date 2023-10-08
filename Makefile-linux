@@ -1,0 +1,31 @@
+# output
+OUTPUT = AirISP
+
+# includes
+INC = \
+-I. \
+-I./platform \
+-I./isp
+
+# sources
+SRC = $(wildcard *.c)
+SRC += $(wildcard ./isp/*.c)
+SRC += platform/linux.c
+
+OBJ = $(patsubst %.c, %.o, $(SRC))
+
+# compiler
+CC = $(PREFIX)gcc
+CFLAGS = $(INC) $(OPT) -Wall -fdata-sections -ffunction-sections
+
+# rules
+$(OUTPUT): $(OBJ)
+	$(CC) $(CFLAGS) $^ -o $@
+
+%.o: %.c
+	$(CC) -c $(CFLAGS) $< -o $@
+
+all: $(OUTPUT)
+
+clean:
+	rm -rf $(OUTPUT) *.o platform/*.o isp/*.o
